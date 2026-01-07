@@ -7,115 +7,250 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.green),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      title: '状态管理示例',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+      appBar: AppBar(title: const Text('状态管理示例')),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _buildCard(
+            context,
+            '1. Widget管理自身状态',
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SelfManagedPage()),
+            ),
+          ),
+          _buildCard(
+            context,
+            '2. 父Widget管理子Widget状态',
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ParentManagedPage()),
+            ),
+          ),
+          _buildCard(
+            context,
+            '3. 混合状态管理',
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const MixedStatePage()),
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildCard(BuildContext context, String title, VoidCallback onTap) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: ListTile(
+        title: Text(title),
+        trailing: const Icon(Icons.arrow_forward_ios),
+        onTap: onTap,
+      ),
+    );
+  }
+}
+
+// 1. Widget管理自身状态
+class SelfManagedPage extends StatelessWidget {
+  const SelfManagedPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Widget管理自身状态')),
+      body: const Center(child: SelfManagedBox()),
+    );
+  }
+}
+
+class SelfManagedBox extends StatefulWidget {
+  const SelfManagedBox({super.key});
+
+  @override
+  State<SelfManagedBox> createState() => _SelfManagedBoxState();
+}
+
+class _SelfManagedBoxState extends State<SelfManagedBox> {
+  bool _isActive = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => setState(() => _isActive = !_isActive),
+      child: Container(
+        width: 200,
+        height: 200,
+        decoration: BoxDecoration(
+          color: _isActive ? Colors.green : Colors.grey,
+          border: Border.all(color: Colors.black, width: 2),
+        ),
+        child: Center(
+          child: Text(
+            _isActive ? '激活' : '未激活',
+            style: const TextStyle(fontSize: 20, color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// 2. 父Widget管理子Widget的状态
+class ParentManagedPage extends StatefulWidget {
+  const ParentManagedPage({super.key});
+
+  @override
+  State<ParentManagedPage> createState() => _ParentManagedPageState();
+}
+
+class _ParentManagedPageState extends State<ParentManagedPage> {
+  bool _isActive = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('父Widget管理子Widget状态')),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            ParentManagedBox(isActive: _isActive),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => setState(() => _isActive = !_isActive),
+              child: Text(_isActive ? '设为未激活' : '设为激活'),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    );
+  }
+}
+
+class ParentManagedBox extends StatelessWidget {
+  final bool isActive;
+
+  const ParentManagedBox({super.key, required this.isActive});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      height: 200,
+      decoration: BoxDecoration(
+        color: isActive ? Colors.blue : Colors.grey,
+        border: Border.all(color: Colors.black, width: 2),
+      ),
+      child: Center(
+        child: Text(
+          isActive ? '激活' : '未激活',
+          style: const TextStyle(fontSize: 20, color: Colors.white),
+        ),
+      ),
+    );
+  }
+}
+
+// 3. 混合状态管理
+class MixedStatePage extends StatefulWidget {
+  const MixedStatePage({super.key});
+
+  @override
+  State<MixedStatePage> createState() => _MixedStatePageState();
+}
+
+class _MixedStatePageState extends State<MixedStatePage> {
+  Color _currentColor = Colors.red;
+
+  void _handleColorChange(Color color) {
+    setState(() => _currentColor = color);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('混合状态管理')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '当前颜色: ${_getColorName(_currentColor)}',
+              style: const TextStyle(fontSize: 24),
+            ),
+            const SizedBox(height: 20),
+            MixedBox(onColorChange: _handleColorChange),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getColorName(Color color) {
+    if (color == Colors.red) return '红色';
+    if (color == Colors.green) return '绿色';
+    if (color == Colors.blue) return '蓝色';
+    return '未知';
+  }
+}
+
+class MixedBox extends StatefulWidget {
+  final Function(Color) onColorChange;
+
+  const MixedBox({super.key, required this.onColorChange});
+
+  @override
+  State<MixedBox> createState() => _MixedBoxState();
+}
+
+class _MixedBoxState extends State<MixedBox> {
+  Color _color = Colors.red;
+  final List<Color> _colors = [Colors.red, Colors.green, Colors.blue];
+  int _colorIndex = 0;
+
+  void _changeColor() {
+    setState(() {
+      _colorIndex = (_colorIndex + 1) % _colors.length;
+      _color = _colors[_colorIndex];
+    });
+    widget.onColorChange(_color);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _changeColor,
+      child: Container(
+        width: 200,
+        height: 200,
+        decoration: BoxDecoration(
+          color: _color,
+          border: Border.all(color: Colors.black, width: 2),
+        ),
+        child: const Center(
+          child: Text(
+            '点击切换颜色',
+            style: TextStyle(fontSize: 18, color: Colors.white),
+          ),
+        ),
       ),
     );
   }
