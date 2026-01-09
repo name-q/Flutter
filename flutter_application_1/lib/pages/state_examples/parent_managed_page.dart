@@ -36,17 +36,19 @@ class ParentManagedBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 200,
-      height: 200,
-      decoration: BoxDecoration(
-        color: isActive ? Colors.blue : Colors.grey,
-        border: Border.all(color: Colors.black, width: 2),
-      ),
-      child: Center(
-        child: Text(
-          isActive ? '激活' : '未激活',
-          style: const TextStyle(fontSize: 20, color: Colors.white),
+    return Center(
+      child: Container(
+        width: 200,
+        height: 200,
+        decoration: BoxDecoration(
+          color: isActive ? Colors.blue : Colors.grey,
+          border: Border.all(color: Colors.black, width: 2),
+        ),
+        child: Center(
+          child: Text(
+            isActive ? '激活' : '未激活',
+            style: const TextStyle(fontSize: 20, color: Colors.white),
+          ),
         ),
       ),
     );

@@ -18,16 +18,18 @@ class _MixedStatePageState extends State<MixedStatePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('混合状态管理')),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            '当前颜色: ${_getColorName(_currentColor)}',
-            style: const TextStyle(fontSize: 24),
-          ),
-          const SizedBox(height: 20),
-          MixedBox(onColorChange: _handleColorChange),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '当前颜色: ${_getColorName(_currentColor)}',
+              style: const TextStyle(fontSize: 24),
+            ),
+            const SizedBox(height: 20),
+            MixedBox(onColorChange: _handleColorChange),
+          ],
+        ),
       ),
     );
   }
