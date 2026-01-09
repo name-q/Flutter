@@ -1,16 +1,24 @@
 # flutter_application_1
 
-A new Flutter project.
 
-## Getting Started
+## 项目结构
 
-This project is a starting point for a Flutter application.
+```
+lib/
+├── main.dart              // 应用入口
+├── app.dart               // App 根组件
+├── routes/
+│   └── app_routes.dart    // 路由表
+├── pages/                 // 页面
+│   ├── home/
+│   │   ├── home_page.dart      // 首页
+│   └── state_examples/         // 状态管理示例
+│       ├── self_managed_page.dart    // Widget自管理状态
+│       ├── parent_managed_page.dart  // 父组件管理状态
+│       └── mixed_state_page.dart     // 混合状态管理
+├── widgets/               // 通用组件
+│   └── common_button.dart      // 通用按钮组件
+├── services/              // 网络 / 本地存储服务
+└── models/                // 数据模型
+```
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
